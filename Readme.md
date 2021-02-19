@@ -361,3 +361,106 @@ fmt.Println("Value of pointer b", *b)
 fmt.Println("Value of pointer b", *b)
 fmt.Println("Value of a:", a)}
 ```
+
+## Methods and Structures 
+
+```go
+package main
+
+import "fmt"
+
+//declared the structure named emp
+type emp struct {
+	name    string
+	address string
+	age     int
+}
+
+//Declaring a function with receiver of the type emp
+func (e emp) display() {
+	fmt.Println(e.name)
+}
+
+func main() {
+	//declaring a variable of type emp
+	var empdata1 emp
+
+	//Assign values to members
+	empdata1.name = "John"
+	empdata1.address = "Street-1, Lodon"
+	empdata1.age = 30
+
+	//declaring a variable of type emp and assign values to members
+	empdata2 := emp{
+		"Raj", "Building-1, Paris", 25}
+
+	//Invoking the method using the receiver of the type emp
+	// syntax is variable.methodname()
+	empdata1.display()
+	empdata2.display()
+}
+
+```
+
+>Go is not an object oriented language and it doesn't have the concept of class. Methods give a feel of what you do in object oriented programs where the functions of a class are invoked using the syntax `objectname.functionname()`
+
+## Concurrency
+Go supports concurrent execution of tasks. It means Go can execute multiple tasks simultaneously. It is different from the concept of parallelism. In parallelism, a task is split into small subtasks and are executed in parallel. But in concurrency, multiple tasks are being executed simultaneously. Concurrency is achieved in Go using Goroutines and Channels.
+
+## Goroutines
+
+A goroutine is a function which can run concurrently with other functions. Usually when a function is invoked the control gets transferred into the called function, and once its completed execution control returns to the calling function. The calling function then continues its execution. The calling function waits for the invoked function to complete the execution before it proceeds with the rest of the statements.
+But in the case of goroutine, the calling function will not wait for the execution of the invoked function to complete. It will continue to execute with the next statements. You can have multiple goroutines in a program.
+
+Also, the main program will exit once it completes executing its statements and it will not wait for completion of the goroutines invoked.
+
+Goroutine is invoked using keyword go followed by a function call.
+
+```go
+func display() {
+  for i:=0; i<5; i++ {
+    time.Sleep(1 * time.Second)
+    fmt.Println("In display")
+  }
+}
+
+func main() {
+//invoking the goroutine display()
+  go display()
+  for i:=0; i<5; i++ {
+    time.Sleep(2 * time.Second)
+    fmt.Println("In main")
+  }
+}
+```
+_**Output**_ 
+```
+In display
+In main
+In display
+In display
+In main
+```
+
+## Channels
+Channels are a way for functions to communicate with each other. It can be thought as a medium to where one routine places data and is accessed by another routine in Golang server.
+
+```go
+package main
+import "fmt"
+import "time"
+    
+func display(ch chan int) {
+	time.Sleep(5 * time.Second)
+	fmt.Println("Inside display()")
+	ch <- 1234
+}
+
+func main() {
+	ch := make(chan int) 
+	go display(ch)
+	x := <-ch
+	fmt.Println("Inside main()")
+	fmt.Println("Printing x in main() after taking from channel:",x)
+}
+```
